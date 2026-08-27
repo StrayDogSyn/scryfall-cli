@@ -117,8 +117,3 @@ All errors are caught before they reach the user. No stack traces print. The pro
 | Network timeout (10s) | `Error: Scryfall did not respond within 10s. Check your connection.` |
 | No internet connection | `Error: Could not reach Scryfall. Check your internet connection.` |
 | HTTP error from Scryfall | `Error: Scryfall returned an error: <status>` |
-
-## Contributors
-
-- **StrayDogSyn** — project creator and maintainer
-- **OpenAI Codex** — test suite, verification, and repository preparation
