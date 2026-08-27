@@ -121,4 +121,4 @@ All errors are caught before they reach the user. No stack traces print. The pro
 ## Contributors
 
 - **StrayDogSyn** — project creator and maintainer
-- **Codex by OpenAI** — test suite, verification, and repository preparation
+- **OpenAI Codex** — test suite, verification, and repository preparation
