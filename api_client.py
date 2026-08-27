@@ -15,7 +15,7 @@ import time
 
 import requests
 
-USER_AGENT = "MyManaBox/1.0 (github.com/StrayDogSyn/MyManaBox)"
+USER_AGENT = "MyManaBox/1.0 (github.com/StrayDogSyn/scryfall-cli)"
 BASE_URL = "https://api.scryfall.com"
 TIMEOUT = 10  # seconds
 
