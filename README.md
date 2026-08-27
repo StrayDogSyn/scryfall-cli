@@ -4,6 +4,10 @@ A command-line tool for looking up Magic: The Gathering cards using the Scryfall
 
 Built as the Code The Dream Python Advanced pre-work submission.
 
+## Requirements
+
+- Python 3.10 or newer
+
 ## API
 
 [Scryfall](https://scryfall.com/docs/api) -- free, no API key, no rate-limit registration. The same one-request-per-record pattern as the CTD Option 3 (PokeAPI). The base URL is `https://api.scryfall.com`. Requests are separated by a 100ms sleep to stay within Scryfall's documented guidelines.
@@ -33,6 +37,16 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 ```
+
+## Tests
+
+Run the complete offline test suite from the project root:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The tests use mocked Scryfall responses, so they do not require internet access.
 
 ## Usage
 
