@@ -40,6 +40,19 @@ class ApiClientTests(unittest.TestCase):
 
     @patch("api_client.time.sleep")
     @patch("api_client.requests.get")
+    def test_fetch_card_handles_non_json_404(self, mock_get, _mock_sleep):
+        response = Mock(status_code=404)
+        response.json.side_effect = ValueError("invalid JSON")
+        mock_get.return_value = response
+
+        with self.assertRaises(api_client.CardNotFoundError) as raised:
+            api_client.fetch_card_by_name("missing")
+
+        self.assertEqual(str(raised.exception), "No card found: missing")
+        self.assertFalse(raised.exception.ambiguous)
+
+    @patch("api_client.time.sleep")
+    @patch("api_client.requests.get")
     def test_fetch_card_translates_network_errors(self, mock_get, _mock_sleep):
         cases = [
             (

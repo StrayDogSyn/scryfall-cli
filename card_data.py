@@ -40,9 +40,10 @@ def extract_card_summary(card: dict) -> dict:
 
     # power and toughness are absent entirely on non-creatures; do not default
     # them to a placeholder -- their absence is meaningful to display.
-    if card.get("power") is not None:
+    # Treat P/T as one logical field. Partial upstream data is malformed and
+    # omitting the pair keeps every display path from producing half a value.
+    if card.get("power") is not None and card.get("toughness") is not None:
         summary["power"] = card["power"]
-    if card.get("toughness") is not None:
         summary["toughness"] = card["toughness"]
 
     return summary

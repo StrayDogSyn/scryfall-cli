@@ -64,8 +64,16 @@ def fetch_card_by_name(name: str) -> dict:
             timeout=TIMEOUT,
         )
         if response.status_code == 404:
-            body = response.json()
-            details = body.get("details", "")
+            # A proxy or CDN may replace Scryfall's JSON error object with an
+            # HTML or plain-text body. A 404 is still a normal lookup miss, so
+            # do not let JSON decoding bypass the user-facing error path.
+            try:
+                body = response.json()
+            except (ValueError, TypeError):
+                body = {}
+            details = body.get("details", "") if isinstance(body, dict) else ""
+            if not isinstance(details, str):
+                details = ""
             # Scryfall uses "too many cards" wording for ambiguous matches
             ambiguous = "too many" in details.lower() or "ambiguous" in details.lower()
             raise CardNotFoundError(

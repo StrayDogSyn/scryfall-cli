@@ -34,6 +34,13 @@ class CardDataTests(unittest.TestCase):
         self.assertNotIn("toughness", summary)
         self.assertIsNone(summary["price_usd"])
 
+    def test_extract_card_summary_omits_asymmetric_power_and_toughness(self):
+        for card in ({"power": "2"}, {"toughness": "2"}):
+            with self.subTest(card=card):
+                summary = extract_card_summary(card)
+                self.assertNotIn("power", summary)
+                self.assertNotIn("toughness", summary)
+
     def test_get_price_handles_missing_null_and_invalid_values(self):
         cases = [
             ({}, None),
