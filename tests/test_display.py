@@ -58,6 +58,16 @@ class DisplayTests(unittest.TestCase):
         self.assertIn("P/T: 2/2", output)
         self.assertIn("P/T: n/a", output)
 
+    def test_print_comparison_handles_asymmetric_power_and_toughness(self):
+        comparison = {
+            "a": {"name": "Partial", "power": "2"},
+            "b": {"name": "Also Partial", "toughness": "3"},
+        }
+
+        output = self.capture(display.print_comparison, comparison)
+
+        self.assertEqual(output.count("P/T: n/a"), 2)
+
     def test_print_card_list_handles_results_and_empty_list(self):
         cards = [{
             "name": "Lightning Bolt",
@@ -73,6 +83,14 @@ class DisplayTests(unittest.TestCase):
         self.assertIn("$0.79", output)
         self.assertIn("1 result(s) returned.", output)
         self.assertIn("No cards to display.", empty_output)
+
+    def test_print_card_list_handles_invalid_usd_price(self):
+        cards = [{"name": "Mystery Card", "prices": {"usd": "unknown"}}]
+
+        output = self.capture(display.print_card_list, cards)
+
+        self.assertIn("Mystery Card", output)
+        self.assertIn("n/a", output)
 
     def test_print_error_uses_consistent_prefix(self):
         output = self.capture(display.print_error, "Something went wrong.")

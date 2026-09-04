@@ -15,11 +15,14 @@ _COL = 38  # column width for side-by-side display
 _WRAP = 62  # oracle text wrap width
 
 
-def _fmt_price(price: float | None) -> str:
+def _fmt_price(price: object) -> str:
     """Format a price value for display."""
-    if price is None:
+    if price is None or price == "":
         return "n/a"
-    return f"${price:.2f}"
+    try:
+        return f"${float(price):.2f}"
+    except (ValueError, TypeError):
+        return "n/a"
 
 
 def _fmt_field(value: str | None, fallback: str = "n/a") -> str:
@@ -27,6 +30,15 @@ def _fmt_field(value: str | None, fallback: str = "n/a") -> str:
     if value is None or str(value).strip() == "":
         return fallback
     return str(value)
+
+
+def _fmt_power_toughness(card: dict) -> str:
+    """Format P/T only when both parts are available."""
+    power = card.get("power")
+    toughness = card.get("toughness")
+    if power is None or toughness is None:
+        return "n/a"
+    return f"{power}/{toughness}"
 
 
 def _wrap_text(text: str, width: int = _WRAP) -> list[str]:
@@ -110,9 +122,9 @@ def print_comparison(comparison: dict) -> None:
         print(f"  {cell_a:<{_COL}} | {cell_b}")
 
     # P/T row: show if either card has it
-    if "power" in a or "power" in b:
-        pt_a = f"{a['power']}/{a['toughness']}" if "power" in a else "n/a"
-        pt_b = f"{b['power']}/{b['toughness']}" if "power" in b else "n/a"
+    if any(key in card for card in (a, b) for key in ("power", "toughness")):
+        pt_a = _fmt_power_toughness(a)
+        pt_b = _fmt_power_toughness(b)
         cell_a = f"P/T: {pt_a}"
         cell_b = f"P/T: {pt_b}"
         print(f"  {cell_a:<{_COL}} | {cell_b}")
@@ -142,8 +154,7 @@ def print_card_list(cards: list[dict]) -> None:
         type_line = (card.get("type_line") or "")[:27]
         rarity = (card.get("rarity") or "").capitalize()[:9]
         prices = card.get("prices") or {}
-        usd = prices.get("usd")
-        price = f"${float(usd):.2f}" if usd else "n/a"
+        price = _fmt_price(prices.get("usd"))
         print(f"  {i:<4} {name:<35} {type_line:<28} {rarity:<10} {price}")
 
     print(f"\n  {len(cards)} result(s) returned.\n")
